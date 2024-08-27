@@ -50,7 +50,7 @@ export default function Contact() {
 
         setError('');
         try {
-            const response = await fetch('https://dev.mossdekk.no/query.php', {
+            const response = await fetch('/api/send_contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
