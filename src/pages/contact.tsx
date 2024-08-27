@@ -35,7 +35,6 @@ export default function Contact() {
         e.preventDefault();
 
         if (!name || !email || !isAgreed || !phone || !subject || !description || !regNo) {
-            console.log('All fields are required=>', { name, email, isAgreed, phone, subject, description, regNo });
             setError('All fields are required.');
             return;
         }
@@ -50,14 +49,15 @@ export default function Contact() {
 
         setError('');
         try {
-            const response = await fetch('/api/send_contact', {
+            const response = await fetch('api/send_contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ action: 'saveContact', payload }),
             });
-
+            console.log("contact response=>", response);
+            
             if (!response.ok) {
                 throw new Error('Failed to subscribe. Please try again later.');
             }

@@ -16,7 +16,6 @@ export default function GetInTouch() {
         }
         setError('');
         try {
-
             const response = await fetch('api/send_subscribe', {
                 method: 'POST',
                 headers: {
