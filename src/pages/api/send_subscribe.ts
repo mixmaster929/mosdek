@@ -1,40 +1,43 @@
-// pages/api/contact.ts
-
 import { NextApiRequest, NextApiResponse } from 'next';
-import { mailSend } from '../../lib/mail'; // Import the mailSend function
+import { mailSend } from '../../lib/mail';
 
-const sendSubscribeFromAPI = async (email: string) => {
+const sendSubscribeFromAPI = async (email: string, res: NextApiResponse) => {
   const location = 'Moss Dekk AS';
 
-  if (email) {
-    const body = `
-      <html>
-        <head></head>
-        <body>
-          Hey, <br>
-          I want to subscribe: ${email}.
-          <br><br>
-        </body>
-      </html>
-    `;
+  if (!email) {
+    return res.status(400).json({ status: 'failed', message: 'Email cannot be empty.' });
+  }
 
-    const emailDetails = {
-      to: 'smart.topdev929@gmail.com', // The recipient
-      toName: 'Subscribe',
-      subject: 'Please Answer to me',
-      body: body,
-      location: location,
-    };
+  const body = `
+    <html>
+      <head></head>
+      <body>
+        Hey, <br>
+        I want to subscribe: ${email}.
+        <br><br>
+      </body>
+    </html>
+  `;
 
-    const mailSuccessful = await mailSend(emailDetails);
+  const receiveEmail = process.env.RECEIVE_EMAIL;
+  if (!receiveEmail) {
+    return res.status(500).json({ status: 'failed', message: 'Receive email is not defined.' });
+  }
 
-    if (mailSuccessful) {
-      return 'Subscription request submitted.';
-    } else {
-      throw new Error('Failed to send subscription email.');
-    }
+  const emailDetails = {
+    to: receiveEmail,
+    toName: 'Subscribe',
+    subject: 'Please Answer to me',
+    body: body,
+    location: location,
+  };
+
+  const mailSuccessful = await mailSend(emailDetails);
+
+  if (mailSuccessful) {
+    return res.status(200).json({ message: 'Subscription request submitted.' });
   } else {
-    throw new Error('Email cannot be empty.');
+    return res.status(500).json({ status: 'failed', message: 'Failed to send subscription email.' });
   }
 };
 
@@ -45,8 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const input = req.body;
       if (input.action === 'sendSubscribe') {
         const { subscribemail } = input.payload;
-        const result = await sendSubscribeFromAPI(subscribemail || '');
-        res.status(200).json({ message: result });
+        await sendSubscribeFromAPI(subscribemail || '', res);
       } else {
         res.status(400).json({ error: 'Invalid action.' });
       }

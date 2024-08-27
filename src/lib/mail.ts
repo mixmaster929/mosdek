@@ -15,8 +15,8 @@ export const mailSend = async (details: MailDetails) => {
     port: 25, // Port number to connect
     secure: false, // Use TLS if available
     auth: {
-      user: '', // SMTP username
-      pass: '', // SMTP password
+      user: 'post@mossdekk.no', // SMTP username
+      pass: 'qvG0I%n_E($t', // SMTP password
     },
   });
 
