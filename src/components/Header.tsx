@@ -14,24 +14,25 @@ import MenuPopup from '@/modal/menu_popup';
 import CountryNO from '@/svg/CountryNO';
 import ResponsiveSidebar from './Responsive_Sidebar';
 export default function Header() {
-    const [isToggleSidebar, setIsToggleSidebar] = useState(false);
+    // const [isToggleSidebar, setIsToggleSidebar] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [languageOpen, setLanguageOpen] = useState(false);
-    const [isResponsiveBarVisible, setIsResponsiveBarVisible] = useState(false);
+    // const [isResponsiveBarVisible, setIsResponsiveBarVisible] = useState(false);
     const [language, setLanguage] = useState('English');
     const [flag, setFlag] = useState(<CountryUS />); // Default flag for English
     const [isHandlingClick, setIsHandlingClick] = useState<boolean>(false);
     const [isMenuPopup, setIsMenuPopup] = useState(false);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const toggleSidebar = () => {
-        // Close the MenuPopup if it's open
-        if (isMenuPopup) {
-            setIsMenuPopup(false);
-        }
-        // Toggle the sidebar
-        setIsOpen((prev) => !prev);
-    };
+    // const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
+    // const toggleSidebar = () => {
+    //     // Close the MenuPopup if it's open
+    //     if (isMenuPopup) {
+    //         setIsMenuPopup(false);
+    //     }
+    //     // Toggle the sidebar
+    //     setIsOpen((prev) => !prev);
+    // };
     // const handleSidebarClose = () => {
     //     setIsSidebarOpen(false);
     // };
@@ -51,9 +52,9 @@ export default function Header() {
         // Reset the flag after a short delay
         setTimeout(() => setIsHandlingClick(false), 200); // Adjust delay as needed
     };
-    const handleCloseModal = () => {
-        setIsMenuPopup(false)
-    };
+    // const handleCloseModal = () => {
+    //     setIsMenuPopup(false)
+    // };
     const toCartPage = () => {
         window.location.href = "/cart"
     };
@@ -77,18 +78,18 @@ export default function Header() {
         setIsOpen(false); // Close dropdown after selection
     };
     // const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
+    
 
     const handleSidebarClose = () => {
         setIsSidebarOpen(false);
     };
 
     const handleOpenMenuPopup = () => {
-        setIsMenuPopupOpen(true);
+        setIsMenuPopup(true);
     };
 
     const handleCloseMenuPopup = () => {
-        setIsMenuPopupOpen(false);
+        setIsMenuPopup(false);
     };
     return (
         <header className="flex flex-row pl-[200px] pr-[200px] responsive-header w-full justify-between">
@@ -227,7 +228,7 @@ export default function Header() {
                 onOpenMenuPopup={handleOpenMenuPopup} // Pass the handler
             />
             <MenuPopup
-                isOpen={isMenuPopupOpen}
+                isOpen={isMenuPopup}
                 onClose={handleCloseMenuPopup}
             />
         </header>

@@ -34,9 +34,9 @@ const Customer_Registration_modal: React.FC<ModalProps> = ({ isOpen, onClose }) 
                             <p className="text-xl leading-7 font-semi-bold text-[#73C018] max-[590px]:text-base">Customer Registration</p>
                             <div className='flex items-center gap-4'>
                                 <button className="bg-none text-xl text-[#73C018] pr-[17px] pl-[10px] py-[6.5px] rounded border border-[#73C018] font-semi-bold max-[590px]:text-base">Sign up</button>
-                                <div onClick={onClose}>
+                                <button onClick={onClose}>
                                     <X_Cancel />
-                                </div>
+                                </button>
                             </div>
                         </div>
                         <div className="flex flex-row">

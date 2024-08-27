@@ -1,18 +1,18 @@
 "use client"
 import Image from "next/image";
-import { Inter } from "next/font/google";
 import React, { ChangeEvent, useEffect, useState, useRef } from 'react';
 import Norway_flag from "../../public/image/Norway (NO).png"
 import N_image from "../../public/image/N.png"
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
+    setIsWelcomeOpen: (open: boolean) => void;
 }
 
-const Reg_Num_Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+const Reg_Num_Modal: React.FC<ModalProps> = ({ isOpen, onClose, setIsWelcomeOpen }) => {
     const modalRef = useRef<HTMLDivElement>(null);
     const [inputValue, setInputValue] = useState<string>("");
     const [isValid, setIsValid] = useState<boolean>(true);
@@ -43,6 +43,7 @@ const Reg_Num_Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
         const value = e.target.value;
+        console.log("handleChange value=>", value);
         // Allow only up to 7 characters
         if (value.length <= 7) {
             setInputValue(value);
@@ -53,6 +54,11 @@ const Reg_Num_Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 const hasNumber = /[0-9]/.test(value);
                 const isValidInput = hasLetter && hasNumber;
                 setIsValid(isValidInput);
+                console.log("isValidInput=>", isValidInput);
+                
+                if (isValidInput) {
+                    getLicensePlateChecker(value); // Call API if valid
+                }
             } else {
                 // Reset validation if not 7 characters
                 setIsValid(true);
@@ -60,14 +66,44 @@ const Reg_Num_Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         }
     };
 
+    const getLicensePlateChecker = async (value: any) => {
+        console.log("getLicensePlateChecker");
+        try {
+            const response = await fetch('/api/regnr', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ inputLicensplate: value }),
+            });
+
+            if (!response.ok) {
+                setIsWelcomeOpen(false);
+                console.error('Network response was not ok');
+            }
+            const result = await response.json();
+            console.log("result=>", result, result.length);
+            
+            if(result){
+                setInputValue("")
+                onClose();
+                setIsWelcomeOpen(true);
+            }
+            
+            // setData(result);
+        } catch (err) {
+            // setError(err.message);
+            console.error('Error fetching data:', err);
+        }
+    }
+
     if (!isOpen) return null;
 
     return (
         <div className="flex justify-center bg-black top-0 z-10 w-full h-full pt-[50px]" style={{ zIndex: "111111", backgroundColor: "rgb(0 0 0 / 80%)", position: "fixed" }}>
             <div ref={modalRef} className="report-licenseplate gap-[16px] flex flex-col" style={{margin:"0px",marginTop:"50px"}}>
                 <div className="report-licenseplate-title modal-report-licenseplate-title gap-36 flex flex-row" style={{gap:"145px"}}>
-                    <p className="text-white text-2xl font-normal font-['Inter'] w-[180px]">Tast inn ditt</p>
-                    <p className="text-white text-2xl font-normal font-['Inter']">RegNr</p>
+                    <p className="text-white text-2xl text-center font-normal font-['Inter']">Tast inn ditt RegNr</p>
                 </div>
                 <div className="report-licenseplate-content flex flex-row shadow">
                     <div className="report-licenseplate-content-header w-[93px] flex flex-col gap-[26px] px-[20px] py-[23px] bg-[#3e61a5] rounded-tl rounded-bl justify-center items-center">

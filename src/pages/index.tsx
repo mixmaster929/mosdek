@@ -59,9 +59,9 @@ import X_Cancel from "@/svg/X_cancel";
 import Cancel from "@/svg/Cancel";
 
 export default function Home() {
-    const [isModalOpen, setIsModalOpen] = useState(false); // Open modal on page load
+    const [isRegNrModal, setIsRegNrModal] = useState(false); // Open modal on page load
     const [isHandlingClick, setIsHandlingClick] = useState<boolean>(false);
-    const [isMenuPopup, setIsMenuPopup] = useState(false);
+    const [isWelcomeModal, setIsWelcomeModal] = useState(false);
     // const [reviews, setReviews] = useState<any[]>([]);
     const [reviews, setReviews] = useState<any[]>([{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]);
 
@@ -71,7 +71,7 @@ export default function Home() {
         if (isHandlingClick) return; // Ignore if already handling
 
         setIsHandlingClick(true);
-        setIsMenuPopup(prev => {
+        setIsRegNrModal(prev => {
             const newValue = !prev; // Toggle the state
             console.log(`isOmlegg changed to: ${newValue}`);
             return newValue;
@@ -80,9 +80,20 @@ export default function Home() {
         // Reset the flag after a short delay
         setTimeout(() => setIsHandlingClick(false), 200); // Adjust delay as needed
     };
-    const handleCloseModal = () => {
-        setIsMenuPopup(false)
+
+    const handleCloseRegNrModal = () => {
+        setIsRegNrModal(false)
     };
+
+    const handleCloseWelcomeModal = () => {
+        setIsWelcomeModal(false)
+    };
+
+    const handleWelcomeModal = (value: boolean) => {
+        console.log("handleWelcomeModal=>", value);
+        
+        setIsWelcomeModal(value);
+    }
     const [showPopup, setShowPopup] = useState(false);
 
     const handleButtonClick: React.MouseEventHandler<HTMLDivElement> = () => {
@@ -275,7 +286,9 @@ export default function Home() {
                             <div className='flex flex-row justify-between w-[518.62px] tsi-footer'>
                                 <div className="cursor-pointer text-center text-white text-xs font-normal font-['Inter'] underline leading-7" onClick={handleButtonClick}>Help with ordering?</div>
                                 <div className="tsi-footer-go-btn cursor-pointer w-[163px] h-[65px] p-2.5 bg-[#73c018] rounded-sm justify-center items-center gap-2.5 inline-flex">
-                                    <div className="text-center text-white text-lg font-semibold font-['Inter'] leading-7">GO</div>
+                                    <Link href="/products">
+                                        <button className="text-center text-white text-lg font-semibold font-['Inter'] leading-7">GO</button>
+                                    </Link>
                                 </div>
 
                                 {showPopup && (
@@ -829,19 +842,19 @@ export default function Home() {
                     <GetInTouch />
                     <Footer />
                 </div>
-                {/* <Reg_Num_Modal isOpen={isModalOpen} onClose={closeModal}/> */}
-                {/* <Welcome_Modal isOpen={isModalOpen} onClose={closeModal} /> */}
-                {/* <Welcome_Modal_Dark isOpen={isModalOpen} onClose={closeModal} /> */}
-                {/* <Welcome_Modal_Case isOpen={isModalOpen} onClose={closeModal} /> */}
-                <Menu_Popup isOpen={isMenuPopup} onClose={handleCloseModal} />
-                {/* <Omlegg_modal isOpen={isModalOpen} onClose={closeModal} /> */}
-                {/* <Tire_Balancing_modal isOpen={isModalOpen} onClose={closeModal} /> */}
-                {/* <Customer_Registration_modal isOpen={isModalOpen} onClose={closeModal} /> */}
-                {/* <Tire_Balancing_modal_another isOpen={isModalOpen} onClose={closeModal} /> */}
-                {/* <Faktura_Modal isOpen={isModalOpen} onClose={closeModal} /> */}
-                {/* <Debetaling_modal isOpen={isModalOpen} onClose={closeModal} /> */}
-                {/* <Faktura_Another_Modal isOpen={isModalOpen} onClose={closeModal} /> */}
-                {/* <Popup_Modal isOpen={isModalOpen} onClose={closeModal} /> */}
+                <Reg_Num_Modal isOpen={isRegNrModal} onClose={handleCloseRegNrModal} setIsWelcomeOpen={handleWelcomeModal} />
+                <Welcome_Modal isOpen={isWelcomeModal} onClose={handleCloseWelcomeModal} />
+                {/* <Welcome_Modal_Dark isOpen={isMenuPopup} onClose={handleCloseModal} /> */}
+                {/* <Welcome_Modal_Case isOpen={isMenuPopup} onClose={handleCloseModal} /> */}
+                {/* <Menu_Popup isOpen={isMenuPopup} onClose={handleCloseModal} /> */}
+                {/* <Omlegg_modal isOpen={isMenuPopup} onClose={handleCloseModal} /> */}
+                {/* <Tire_Balancing_modal isOpen={isMenuPopup} onClose={handleCloseModal} /> */}
+                {/* <Customer_Registration_modal isOpen={isMenuPopup} onClose={handleCloseModal} /> */}
+                {/* <Tire_Balancing_modal_another isOpen={isRegNrModal} onClose={handleCloseModal} onTimeSlotSelected={handleCloseModal} /> */}
+                {/* <Faktura_Modal isOpen={isRegNrModal} onClose={handleCloseModal} /> */}
+                {/* <Debetaling_modal isOpen={isRegNrModal} onClose={handleCloseModal} /> */}
+                {/* <Faktura_Another_Modal isOpen={isRegNrModal} onClose={handleCloseModal} /> */}
+                {/* <Popup_Modal isOpen={isRegNrModal} onClose={handleCloseModal} /> */}
 
             </main>
         </div>

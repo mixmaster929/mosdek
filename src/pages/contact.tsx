@@ -16,10 +16,72 @@ import Input_phone from "@/svg/Input_phone";
 import Send from "@/svg/Send";
 import { MdCheckBox } from "react-icons/md";
 import Link from "next/link";
+import { useState } from 'react';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Contact() {
+
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [subject, setSubject] = useState('');
+    const [description, setDescription] = useState('');
+    const [regNo, setRegNo] = useState('');
+    const [isAgreed, setIsAgreed] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();
+
+        if (!name || !email || !isAgreed || !phone || !subject || !description || !regNo) {
+            console.log('All fields are required=>', { name, email, isAgreed, phone, subject, description, regNo });
+            setError('All fields are required.');
+            return;
+        }
+        const payload = {
+            name,
+            email,
+            phone,
+            subject,
+            description,
+            regNo,
+        };
+
+        setError('');
+        try {
+            const response = await fetch('https://dev.mossdekk.no/query.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ action: 'saveContact', payload }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to subscribe. Please try again later.');
+            }
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                console.log("Contact saved successfully:", data);
+            } else {
+                setError('Contact failed. Please try again.');
+            }
+
+            setName('');
+            setEmail('');
+            setPhone('');
+            setSubject('');
+            setDescription('');
+            setRegNo('');
+            setIsAgreed(false);
+        } catch (error) {
+            console.error("Error during subscription:", error);
+            setError("afefefe");
+        }
+    };
+
     return (
         <div className="home-container flex flex-col">
             <Header />
@@ -65,15 +127,32 @@ export default function Contact() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="cpc-information-input flex flex-col gap-[66px]">
+                            <form onSubmit={handleSubmit} className="cpc-information-input flex flex-col gap-[66px]">
                                 <div className="cpc-infor-input-pan gap-[55px] flex flex-col">
+                                    <div className="cpc-iip-list responsive-cpc-iip-list flex flex-row gap-[28px]">
+                                        <div className="flex w-full gap-[19px] items-center border-b border-[#aaaaaa] pb-[17px]">
+                                            <Input_user />
+                                            <input
+                                                type="text"
+                                                id="regNo"
+                                                placeholder="Reg No"
+                                                value={regNo}
+                                                className="appearance-none bg-transparent border-none w-full text-[#6d6d6d] text-lg font-['Inter'] leading-tight focus:outline-none placeholder-[#6d6d6d]"
+                                                onChange={(e) => setRegNo(e.target.value)}
+                                                required={true}
+                                            />
+                                        </div>
+                                    </div>
                                     <div className="cpc-iip-list flex flex-row gap-[28px]">
                                         <div className="flex w-[334px] gap-[19px] items-center border-b border-[#aaaaaa] pb-[17px]">
                                             <Input_user />
                                             <input
                                                 type="text"
+                                                id="name"
                                                 placeholder="Name"
+                                                value={name}
                                                 className="appearance-none bg-transparent border-none w-full text-[#6d6d6d] text-lg font-['Inter'] leading-tight focus:outline-none placeholder-[#6d6d6d]"
+                                                onChange={(e) => setName(e.target.value)}
                                                 required={true}
                                             />
                                         </div>
@@ -81,8 +160,11 @@ export default function Contact() {
                                             <Input_mail />
                                             <input
                                                 type="email"
+                                                id="email"
                                                 placeholder="Email Address"
+                                                value={email}
                                                 className="appearance-none bg-transparent border-none w-full text-[#6d6d6d] text-lg font-['Inter'] leading-tight focus:outline-none placeholder-[#6d6d6d]"
+                                                onChange={(e) => setEmail(e.target.value)}
                                                 required={true}
                                             />
                                         </div>
@@ -92,8 +174,11 @@ export default function Contact() {
                                             <Input_phone />
                                             <input
                                                 type="tel"
+                                                id="phone"
                                                 placeholder="Phone"
+                                                value={phone}
                                                 className="appearance-none bg-transparent border-none w-full text-[#6d6d6d] text-lg font-['Inter'] leading-tight focus:outline-none placeholder-[#6d6d6d] placeholder-text"
+                                                onChange={(e) => setPhone(e.target.value)}
                                                 required={true}
                                             />
                                         </div>
@@ -101,8 +186,11 @@ export default function Contact() {
                                             <Input_alert />
                                             <input
                                                 type="text"
+                                                id="subject"
                                                 placeholder="Subject"
+                                                value={subject}
                                                 className="appearance-none bg-transparent border-none w-full text-[#6d6d6d] text-lg font-['Inter'] leading-tight focus:outline-none placeholder-[#6d6d6d]"
+                                                onChange={(e) => setSubject(e.target.value)}
                                                 required={true}
                                             />
                                         </div>
@@ -116,8 +204,11 @@ export default function Contact() {
                                             <div className="flex w-full gap-[19px] items-center border-b border-[#aaaaaa] py-[17px]">
                                                 <input
                                                     type="text"
-                                                    placeholder=""
+                                                    id="description"
+                                                    placeholder="Enter message here..."
+                                                    value={description}
                                                     className="appearance-none bg-transparent border-none w-full text-[#6d6d6d] text-lg font-['Inter'] leading-tight focus:outline-none placeholder-[#6d6d6d]"
+                                                    onChange={(e) => setDescription(e.target.value)}
                                                     required={true}
                                                 />
                                             </div>
@@ -127,17 +218,20 @@ export default function Contact() {
                                 <div className="cpc-infor-confirm-btn flex items-center flex-row gap-[48px]">
                                     <div className="w-[235px] h-[61px] p-2.5 bg-[#73c018] justify-center items-center gap-2.5 inline-flex">
                                         <div className="w-6 h-6 relative"><Send /></div>
-                                        <p className="text-justify text-white text-lg font-normal font-['Inter'] leading-7">GET IN TOUCH</p>
+                                        <button type="submit" className="text-justify text-white text-lg font-normal font-['Inter'] leading-7">GET IN TOUCH</button>
                                     </div>
                                     <div className="h-6 flex flex-row items-center gap-[7px]">
                                         <input
                                             type="checkbox"
+                                            checked={isAgreed}
+                                            onChange={(e) => setIsAgreed(e.target.checked)}
                                             className="form-checkbox h-5 w-5 text-blue-600"
+                                            required={true}
                                         />
                                         <div className="text-justify flex flex-row"><p className="text-[#6d6d6d] text-base font-normal font-['Inter'] leading-normal">I agree with the site’s <Link className="text-[#6d6d6d] text-base font-normal font-['Inter'] underline leading-normal" href="/privacy">privacy policy.</Link></p></div>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                     <Footer />
